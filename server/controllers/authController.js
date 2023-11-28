@@ -1,0 +1,47 @@
+require('dotenv').config()
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const bcrypt = require('bcrypt')
+
+
+const USERS_URL = "http://localhost:3000/users"
+
+
+const authUser = async(req, res ) => {
+    console.log(req)
+    const { username, password} = req.body;  
+    try {
+        //check if the provided username and password mache a user
+        const response = await axios.get(USERS_URL)
+        const {data:users} = response;
+        const foundUserByUsername = users.find(user => user.username === username);
+        if(!foundUserByUsername)return res.sendStatus(401); //unauthorized
+        //check if match password 
+        const match = await bcrypt.compare(password, foundUserByUsername.password)
+        if(match){
+            const tokenPayload = {
+              userInfo: {
+                username: foundUserByUsername.username,
+                roles: foundUserByUsername.roles,
+                id: foundUserByUsername._id,
+            }
+              };
+              
+              const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_SECRET_TOKEN, {expiresIn: "30s"});
+              const refreshToken = jwt.sign(tokenPayload, process.env.REFRESH_SECRET_TOKEN, {expiresIn: "1d"});
+              const currentUser = {...foundUserByUsername, refreshToken}
+              console.log(currentUser);
+              await axios.put(USERS_URL, currentUser)
+                res.cookie('jwt' , refreshToken , {httpOnly: true,  maxAge: 24 * 60 * 60 * 1000})
+                res.header('Authorization', `Bearer ${accessToken}`);
+              res.json({ accessToken: accessToken, 'success' : `User ${username} Is Loged in`} );
+        } else {
+            return res.sendStatus(401)
+        }
+         } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+  module.exports = {authUser};

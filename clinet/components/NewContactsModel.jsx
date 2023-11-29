@@ -4,7 +4,7 @@ import React from 'react'
 import ContactsContext from "../context/ContactsProvider"
 
 
-export default function NewContactsModel({closeModel}) {
+const NewContactsModel = ({closeModel}) => {
     const { updateContacts } = useContext(ContactsContext);
    const contactNameRef = useRef();
    const errRef = useRef();
@@ -90,3 +90,5 @@ export default function NewContactsModel({closeModel}) {
        </section>
   )
 }
+
+export default  NewContactsModel

@@ -6,7 +6,7 @@ import AuthContext from '../context/AuthProvider';
 import '../../styles/modelsStyle.css'
 
 
-export default function NewGroupModel({closeModel}) {
+const NewGroupModel = ({closeModel}) =>{
     const { auth } = useContext(AuthContext); 
     const {addNewGroup} = useContext(GroupsContext);
     const { contacts } = useContext(ContactsContext);
@@ -127,3 +127,5 @@ export default function NewGroupModel({closeModel}) {
        </section>
   )
 }
+
+export default  NewGroupModel

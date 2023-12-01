@@ -1,7 +1,7 @@
 // Groups.js
 
-import React, { useContext, useState } from 'react';
-import { ListGroup } from 'react-bootstrap';
+import React, { useContext, useMemo, useState } from 'react';
+import { ListGroup, Placeholder } from 'react-bootstrap';
 import GroupsContext from '../context/GroupsProvider';
 import ConvarstionContext from '../context/ConverstionsProvider';
 import SocketContext from '../context/SocketProvider';
@@ -12,6 +12,7 @@ function Groups() {
   const { socket } = useContext(SocketContext);
   const { openGroupConversation } = useContext(ConvarstionContext);
   const [currentRoom, setCurrentRoom] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   const joinRoom = (groupId, callback) => {
     if (currentRoom !== groupId) {
@@ -36,12 +37,25 @@ function Groups() {
       console.log(result);
     });
   };
-
+  const filteredGroups = useMemo(() => {
+    if (searchText === '') {
+      return groups;
+    }
+  
+    return groups.filter((group) =>
+      group.groupName.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [searchText, groups]);
+  
   return (
     <section>
-      <h2>Groups</h2>
+      <div className='info-container'>
+        <h2>Groups</h2>
+          <input type='text' className='textarea' onChange={(e)=> setSearchText(e.target.value)} placeholder='Search Group'></input>     
+      </div>
+      <div>
       <ListGroup className="group-list">
-        {groups.map((group, index) => (
+        {filteredGroups.map((group, index) => (
           <ListGroup.Item
             key={index}
             className={`group-item ${currentRoom === group._id ? 'active' : ''}`}
@@ -51,6 +65,7 @@ function Groups() {
           </ListGroup.Item>
         ))}
       </ListGroup>
+      </div>
     </section>
   );
 }

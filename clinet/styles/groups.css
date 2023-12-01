@@ -1,0 +1,50 @@
+/* Groups.css */
+
+.group-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .group-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  width: 100%; /* Make the items take full width */
+  box-sizing: border-box; /* Include padding and border in the width */
+  }
+  
+  .group-item:hover {
+    background-color: #f0f0f0; /* Highlight background on hover */
+  }
+  
+  .group-item.active {
+    background-color: #3b64d5; /* Background color when the group is active */
+    font-weight: bold; /* Bold text for active group */
+    color: white;
+  }
+
+  .info-container {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .textarea {
+    flex: 1;
+    resize: none;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-right: 8px;
+  }

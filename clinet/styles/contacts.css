@@ -1,0 +1,32 @@
+/* contacts.css */
+/* Contacts.css */
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+  }
+  
+  .contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    width: 100%; /* Make the items take full width */
+    box-sizing: border-box; /* Include padding and border in the width */
+  }
+  
+  .contact-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .contact-item.active {
+    background-color: #3b64d5; /* Background color when the group is active */
+    font-weight: bold; /* Bold text for active group */
+    color: white;
+  }
+  

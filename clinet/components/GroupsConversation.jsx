@@ -99,8 +99,8 @@ function GroupsConversation() {
         <div className='container'>
           {currentConversation.map((conv , index)=> (
             
-          <div key={index} >
-            <div>{messages.map((msg, index) => (
+          <div className='messages-container' key={index} >
+            {messages.map((msg, index) => (
                 <div
                 className='message'
                 style={{
@@ -131,7 +131,7 @@ function GroupsConversation() {
                 }
                 </div>
               </div>
-            ))}</div>
+            ))}
           </div>
         ))}
           </div>

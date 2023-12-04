@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import ConvarstionContext from '../context/ConverstionsProvider'
 import AuthContext from '../context/AuthProvider';
 import SocketContext from '../context/SocketProvider'
@@ -16,7 +16,18 @@ function GroupsConversation() {
     const [currentConversation , setCurrentConversation] = useState(null)
     const [text, setText] = useState('')
     const [modelOpen, setModelOpen] = useState(false)
+    const [searchText, setSearchText] = useState('');
+    const [search, setSearch] = useState('');
+    const [matchingMessages, setMatchingMessages] = useState([]);
+    const [searchRef, setSearchRef] = useState(null);
 
+
+    const setRef = useCallback(node => {
+      if (node) {
+        node.scrollIntoView({smooth:true})
+      }
+    },[])
+   
     const userId = auth.id
 
     const closeModel = () => {
@@ -64,6 +75,22 @@ function GroupsConversation() {
     await leaveCurrentGroup(conversationId, filteredMembers)
   }
 
+  useEffect(() => {
+    // Update matching messages when search text changes
+    const filteredMessages = messages.filter((message) =>
+      message.text.toLowerCase().includes(search.toLowerCase())
+    );
+    setMatchingMessages(filteredMessages);
+  }, [search]);
+
+  useEffect(() => {
+    if (searchRef) {
+      // Scroll to the most recent message in the search messages
+      searchRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [matchingMessages]);
+
+
   useEffect(()=>{
     fetchData()
   },[messages])
@@ -93,6 +120,8 @@ function GroupsConversation() {
         </div>
       ) : null}
           <h3>Group Name: {conv.groupName}</h3>
+          <input type='text' className='textarea' onChange={(e)=> setSearchText(e.target.value)} placeholder='Search Group'></input>
+          <button onClick={()=> setSearch(searchText)}> </button>
        </div>
         ))}
           
@@ -102,6 +131,7 @@ function GroupsConversation() {
           <div className='messages-container' key={index} >
             {messages.map((msg, index) => (
                 <div
+                ref={setRef}
                 className='message'
                 style={{
                   alignItems: msg.sender !== userId ? 'flex-start' : 'flex-end',
@@ -116,7 +146,15 @@ function GroupsConversation() {
                     background: msg.sender === userId ? 'lightBlue' : 'ghostWhite'
                   }}
                 >
-                  {msg.text}
+                  <div 
+                      ref={index === matchingMessages.length - 1 ? setSearchRef : null}
+                      style={{
+                        background: matchingMessages.includes(msg)
+                        ? 'yellow'
+                        : 'transparent', 
+                      }}>
+                        {msg.text}
+                    </div>
                 </div>
                 <div
                   className="message-sender"

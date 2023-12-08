@@ -76,6 +76,7 @@ function GroupsConversation() {
   }
 
   useEffect(() => {
+      if (search === '') return
     // Update matching messages when search text changes
     const filteredMessages = messages.filter((message) =>
       message.text.toLowerCase().includes(search.toLowerCase())

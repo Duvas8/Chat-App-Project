@@ -1,0 +1,88 @@
+/* Add your global styles here */
+
+.form-container {
+    max-width: 700px;
+    width: 50vh;
+    margin: 0 auto;
+    padding: 5%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: cornflowerblue;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  p {
+    color: #555;
+  }
+  
+  /* Error message styles */
+  .errmsg {
+    color: #ff0000;
+  }
+  
+  .offscreen {
+    position: absolute;
+    left: -9999px;
+  }
+  
+  /* Form input styles */
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+  
+  .instructions {
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .valid {
+    color: #00cc00;
+  }
+  
+  .invalid {
+    color: #ff0000;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  /* Button styles */
+  .form-button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Sign In link styles */
+  .line {
+    display: inline-block;
+    margin-top: 10px;
+  }
+  
+  /* Add more styles as needed */
+  

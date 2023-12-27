@@ -3,8 +3,11 @@ import { useEffect, useState, useRef } from 'react'
 import { Link, Outlet } from 'react-router-dom';
 
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import axios from 'axios';
+
+import '../../styles/registerForm.css'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,24}$/;
@@ -109,16 +112,17 @@ const  Register = () => {
            </p>
        </section>
    ) : (
-       <section>
+       <section className='form-container'>
            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
            <h1>Register</h1>
            <form onSubmit={handleSubmit}>
-               <label htmlFor="username">
+               <label htmlFor="username" className='form-input'>
                    Username:
                    <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
                    <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
                </label>
                <input
+                   className='form-input'
                    type="text"
                    id="username"
                    ref={userRef}
@@ -139,12 +143,13 @@ const  Register = () => {
                </p>
 
 
-               <label htmlFor="password">
+               <label htmlFor="password" className='form-input'>
                    Password:
                    <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
                    <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
                </label>
                <input
+                   className='form-input'
                    type="password"
                    id="password"
                    onChange={(e) => setPwd(e.target.value)}
@@ -163,12 +168,13 @@ const  Register = () => {
                </p>
 
 
-               <label htmlFor="confirm_pwd">
+               <label htmlFor="confirm_pwd" className='form-input'>
                    Confirm Password:
                    <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
                    <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
                </label>
                <input
+                   className='form-input'
                    type="password"
                    id="confirm_pwd"
                    onChange={(e) => setMatchPwd(e.target.value)}
@@ -184,12 +190,12 @@ const  Register = () => {
                    Must match the first password input field.
                </p>
 
-               <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+               <button className='form-button' disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
            </form>
            <p>
                Already registered?<br />
                <span className="line">
-               <Link to='login '>Sign In</Link> <br />
+               <Link  to='login '>Sign In</Link> <br />
                 <Outlet />
                </span>
            </p>

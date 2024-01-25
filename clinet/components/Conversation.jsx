@@ -2,7 +2,9 @@
   import ConvarstionContext from '../context/ConverstionsProvider';
   import ContactsContext from '../context/ContactsProvider'
   import AuthContext from '../context/AuthProvider';
-  import SocketContext from '../context/SocketProvider'
+  import SocketContext from '../context/SocketProvider';
+  import {VideoCall} from "./VideoCall";
+  // import Peer from 'simple-peer';
   import axios from 'axios';
   import '../../styles/conversationStyle.css'; 
 
@@ -25,19 +27,17 @@
     const [matchingMessages, setMatchingMessages] = useState([]);
     const [searchRef, setSearchRef] = useState(null);
 
+    const [inCall, setInCall] = useState(false)
+    const [incomingCall, setIncomingCall] = useState(false);
+    const [from, setFrom] = useState('')
+
 
     const setRef = useCallback(node => {
       if (node) {
         node.scrollIntoView({smooth:true})
       }
     },[])
-    useEffect(() => {
-      if (searchRef) {
-        // Scroll to the most recent message in the search messages
-        searchRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }
-    }, [matchingMessages]);
-    //const lastMessage = currentConversation.messages.length - 1 === index
+    
 
     const userId = auth.id
 
@@ -68,7 +68,7 @@
         if (socket) {
           socket.off('receive-private-message');
         }
-      };z
+      };
       
     }, [conversations]);
     
@@ -131,12 +131,46 @@
       setMatchingMessages(filteredMessages);
     }, [search]);
 
+    useEffect(() => {
+      if (searchRef) {
+        // Scroll to the most recent message in the search messages
+        searchRef.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, [matchingMessages]);
+
+    const startVideoCall = async (userId) => {
+      const fetchedConversation = await currentConversation[0]._id;
+      callUser(userId, fetchedConversation);
+    };
+
+    const callUser = ( userId, fetchedConversation) => {
+      
+      setInCall(true)
+      console.log(fetchedConversation);
+      socket.emit('start-video-call', fetchedConversation , userId)
+    }
+
+    useEffect(()=>{
+      console.log(socket);
+      if(socket == null) return console.log("socket is null");
+      socket.on('receive-video-call', (from) => {
+        console.log(`${from} calling`);
+        setFrom(from)
+        setIncomingCall(true)
+        
+      })
+      return () => socket.off('receive-video-call')
+    },[incomingCall])
+
+    const answerCall = () => {
+      setInCall(true)
+      setIncomingCall(false)
+    }
     
     useEffect(()=>{
       fetchData()
     },[messages])
     
-  
     
     console.log(currentConversation);
     return (
@@ -144,11 +178,13 @@
           {currentConversation  ? (
         <div>
             <div className='info-container'>
-              <h4>Conversation</h4>
-              <br/>
+              <h4 style={{margin:'0'}}>Conversation</h4>
                 <h3>Recipient: {recipientName}</h3>
-                <input type='text' className='textarea' onChange={(e)=> setSearchText(e.target.value)} placeholder='Search Group'></input>
-                <button onClick={()=> setSearch(searchText)}> </button>
+                <div>
+                <input type='text' className="textarea" onChange={(e)=> setSearchText(e.target.value)} placeholder='Search Group'></input>
+                <button className="send-button" style={{margin:'8px', backgroundColor:"ghostWhite",  color:'cornflowerblue'}} onClick={()=> setSearch(searchText)}> Search Message </button>
+                <button className="send-button" style={{margin:'8px', backgroundColor:"ghostWhite",  color:'cornflowerblue'}} onClick={() => startVideoCall(userId)}>Call</button>
+                </div>
               </div>
 
           <div className='container'>  
@@ -209,7 +245,24 @@
                 </button>
             </div>
             </div>     
-          </form>      
+          </form> 
+          <div  >
+            
+            {incomingCall && (
+                <div className='incoming-call-container'>
+                    <h3>Incoming Call from {from}</h3>
+                    <button className="send-button" style={{margin:'8px', backgroundColor:"ghostWhite",  color:'cornflowerblue'}} onClick={answerCall}>Answer Call</button>
+                </div>
+            )}
+
+            {inCall ? (
+              <div className='incoming-call-container'>
+                <VideoCall setInCall={setInCall} recipientName={recipientName} contactId={memberId} userId={userId} />
+                 </div>
+              
+            ):(null)}
+          
+        </div>
       </div>
       ) : (
         <div className='info-container'> no recipients</div>
